@@ -14,7 +14,7 @@ import {
 } from './user.interface';
 import { IProfileUpdateRequest } from '../auth/auth.interface';
 
-// ! getting all users ----------------------------------------------------------------------->>>
+// ! getting all users 
 const getAllUserService = async (options: IPaginationOptions): Promise<any> => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
@@ -44,7 +44,7 @@ const getAllUserService = async (options: IPaginationOptions): Promise<any> => {
   };
 };
 
-// ! getting single user data -------------------------------------------------------->>>
+// ! getting single user data 
 const getSingleUser = async (userId: string): Promise<any | null> => {
   // Check if the user exists
   const existingUser = await prisma.user.findUnique({
@@ -78,7 +78,7 @@ const getSingleUser = async (userId: string): Promise<any | null> => {
 };
 
 
-// ! Update Profile data -------------------------------------------------------->>>
+// ! Update Profile data 
 
 const updateProfileInfo = async (
   profileId: string,
@@ -226,7 +226,7 @@ const updateMyProfileInfo = async (
 };
 
 
-// ! update user info -------------------------------------------------------->>>
+// ! update user info 
 
 const updateUserInfo = async (
   userId: string,
@@ -285,7 +285,7 @@ const updateUserInfo = async (
 
 
 
-//! get my profile ----------------------------------------------------------------------->>>
+//! get my profile 
 const getMyProfile = async (userId: string): Promise<any | null> => {
   const result = await prisma.user.findUnique({
     where: {
