@@ -37,8 +37,8 @@ const createNewUser = async (data: IUserCreate) => {
     const profileData = {
       firstName: data.firstName,
       lastName: data.lastName,
-      profileImage: data.profileImage!,
-      role: data.role!,
+      profileImage: data?.profileImage!,
+      role: data?.role,
     };
 
     const createdProfile = await transactionClient.profile.create({
@@ -80,6 +80,11 @@ const createNewUser = async (data: IUserCreate) => {
         createdAt: true,
         email: true,
         userId: true,
+        profile: {
+          select: {
+            role: true,
+          },
+        },
       },
     });
 
