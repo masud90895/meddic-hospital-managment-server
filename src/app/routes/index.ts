@@ -9,6 +9,8 @@ import { BlogRoutes } from '../modules/blogs/blogs.routes';
 import { SlotRoutes } from '../modules/slots/slots.routes';
 import { ReviewAndRatingRoutes } from '../modules/reviewAndRatings/reviewAndRating.routes';
 import { FeedBackRoutes } from '../modules/feedBackForms/feedBackForm.routes';
+import { AppointmentBookingRoutes } from '../modules/appointmentBooking/appointmentBooking.routes';
+import { FaqRoutes } from '../modules/FAQ/faq.routes';
 
 const router = express.Router();
 
@@ -52,6 +54,14 @@ const moduleRoutes = [
   {
     path: '/feedback-forms',
     route: FeedBackRoutes,
+  },
+  {
+    path: '/appointment-booking',
+    route: AppointmentBookingRoutes,
+  },
+  {
+    path: '/faqs',
+    route: FaqRoutes,
   },
 ];
 

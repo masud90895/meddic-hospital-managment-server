@@ -32,7 +32,6 @@ CREATE TABLE "profiles" (
     "bloodGroup" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "doctorId" TEXT,
 
     CONSTRAINT "profiles_pkey" PRIMARY KEY ("profileId")
 );
@@ -43,7 +42,8 @@ CREATE TABLE "doctors" (
     "qualification" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "specialization_id" TEXT NOT NULL,
+    "profileId" TEXT NOT NULL,
+    "specializationId" TEXT NOT NULL,
 
     CONSTRAINT "doctors_pkey" PRIMARY KEY ("doctorId")
 );
@@ -96,22 +96,21 @@ CREATE TABLE "blogs" (
     "blogImage" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "profilId" TEXT NOT NULL,
+    "profileId" TEXT NOT NULL,
 
     CONSTRAINT "blogs_pkey" PRIMARY KEY ("blogId")
 );
 
 -- CreateTable
 CREATE TABLE "faqs" (
-    "blogId" TEXT NOT NULL,
-    "blogTitle" TEXT NOT NULL,
-    "blogDescription" TEXT NOT NULL,
-    "blogImage" TEXT NOT NULL,
+    "faqId" TEXT NOT NULL,
+    "faqTitle" TEXT NOT NULL,
+    "faqDescription" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "profilId" TEXT NOT NULL,
+    "profileId" TEXT NOT NULL,
 
-    CONSTRAINT "faqs_pkey" PRIMARY KEY ("blogId")
+    CONSTRAINT "faqs_pkey" PRIMARY KEY ("faqId")
 );
 
 -- CreateTable
@@ -124,7 +123,7 @@ CREATE TABLE "products" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "serviceId" TEXT NOT NULL,
-    "profilId" TEXT NOT NULL,
+    "profileId" TEXT NOT NULL,
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("productId")
 );
@@ -147,8 +146,8 @@ CREATE TABLE "appointment_bookings" (
     "appointmentStatus" "appointmentStatus" NOT NULL DEFAULT 'pending',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "serviceId" TEXT NOT NULL,
     "profileId" TEXT NOT NULL,
+    "serviceId" TEXT NOT NULL,
     "slotId" TEXT NOT NULL,
 
     CONSTRAINT "appointment_bookings_pkey" PRIMARY KEY ("appointmentId")
@@ -157,8 +156,8 @@ CREATE TABLE "appointment_bookings" (
 -- CreateTable
 CREATE TABLE "time_slots" (
     "slotId" TEXT NOT NULL,
-    "startTime" TEXT NOT NULL,
-    "endTime" TEXT NOT NULL,
+    "startTime" TIMESTAMP(3) NOT NULL,
+    "endTime" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -172,7 +171,6 @@ CREATE TABLE "feedback_forms" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "serviceId" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
     "profileId" TEXT NOT NULL,
 
     CONSTRAINT "feedback_forms_pkey" PRIMARY KEY ("feedbackId")
@@ -185,7 +183,7 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 CREATE UNIQUE INDEX "users_profileId_key" ON "users"("profileId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "profiles_doctorId_key" ON "profiles"("doctorId");
+CREATE UNIQUE INDEX "doctors_profileId_key" ON "doctors"("profileId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "services_serviceName_key" ON "services"("serviceName");
@@ -196,14 +194,20 @@ CREATE UNIQUE INDEX "categories_categoryName_key" ON "categories"("categoryName"
 -- CreateIndex
 CREATE UNIQUE INDEX "specializations_specializationName_key" ON "specializations"("specializationName");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "time_slots_startTime_key" ON "time_slots"("startTime");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "time_slots_endTime_key" ON "time_slots"("endTime");
+
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("profileId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "profiles" ADD CONSTRAINT "profiles_doctorId_fkey" FOREIGN KEY ("doctorId") REFERENCES "doctors"("doctorId") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "doctors" ADD CONSTRAINT "doctors_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "doctors" ADD CONSTRAINT "doctors_specialization_id_fkey" FOREIGN KEY ("specialization_id") REFERENCES "specializations"("specializationId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "doctors" ADD CONSTRAINT "doctors_specializationId_fkey" FOREIGN KEY ("specializationId") REFERENCES "specializations"("specializationId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "services" ADD CONSTRAINT "services_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "categories"("categoryId") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -215,31 +219,28 @@ ALTER TABLE "reviews_and_ratings" ADD CONSTRAINT "reviews_and_ratings_profileId_
 ALTER TABLE "reviews_and_ratings" ADD CONSTRAINT "reviews_and_ratings_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "services"("serviceId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "blogs" ADD CONSTRAINT "blogs_profilId_fkey" FOREIGN KEY ("profilId") REFERENCES "profiles"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "blogs" ADD CONSTRAINT "blogs_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "faqs" ADD CONSTRAINT "faqs_profilId_fkey" FOREIGN KEY ("profilId") REFERENCES "profiles"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "faqs" ADD CONSTRAINT "faqs_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "services"("serviceId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "products" ADD CONSTRAINT "products_profilId_fkey" FOREIGN KEY ("profilId") REFERENCES "profiles"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "appointment_bookings" ADD CONSTRAINT "appointment_bookings_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "services"("serviceId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "products" ADD CONSTRAINT "products_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "appointment_bookings" ADD CONSTRAINT "appointment_bookings_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "appointment_bookings" ADD CONSTRAINT "appointment_bookings_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "services"("serviceId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "appointment_bookings" ADD CONSTRAINT "appointment_bookings_slotId_fkey" FOREIGN KEY ("slotId") REFERENCES "time_slots"("slotId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "feedback_forms" ADD CONSTRAINT "feedback_forms_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "services"("serviceId") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "feedback_forms" ADD CONSTRAINT "feedback_forms_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("productId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "feedback_forms" ADD CONSTRAINT "feedback_forms_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
