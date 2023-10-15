@@ -7,7 +7,6 @@ import { IRequestUser } from '../users/user.interface';
 import { ProductsService } from './products.service';
 import { ProductFilterableFields } from './products.constants';
 
-
 const createNewProduct = catchAsync(async (req: Request, res: Response) => {
   const profileId = (req.user as IRequestUser).profileId;
   const result = await ProductsService.createNewProduct(profileId, req);
@@ -21,7 +20,7 @@ const createNewProduct = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllProducts = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.query,ProductFilterableFields);
+  const filters = pick(req.query, ProductFilterableFields);
   const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 
   const result = await ProductsService.getAllProducts(filters, options);
@@ -35,7 +34,6 @@ const getAllProducts = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
 const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
   const { productId } = req.params;
   const result = await ProductsService.getSingleProduct(productId);
@@ -48,23 +46,17 @@ const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const updateProduct = catchAsync(
-  async (req: Request, res: Response) => {
-    const { productId } = req.params;
-    const result = await ProductsService.updateProduct(
-      productId,
-      req.body
-    );
+const updateProduct = catchAsync(async (req: Request, res: Response) => {
+  const { productId } = req.params;
+  const result = await ProductsService.updateProduct(productId, req.body);
 
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Product retrieved successfully',
-      data: result,
-    });
-  }
-);
-
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Product retrieved successfully',
+    data: result,
+  });
+});
 
 const singleProductDelete = catchAsync(async (req: Request, res: Response) => {
   const { productId } = req.params;
@@ -78,12 +70,10 @@ const singleProductDelete = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
-
 export const ProductsController = {
   createNewProduct,
   getAllProducts,
   getSingleProduct,
   updateProduct,
-  singleProductDelete
+  singleProductDelete,
 };

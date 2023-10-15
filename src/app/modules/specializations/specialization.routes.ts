@@ -4,16 +4,14 @@ import { userRole } from '@prisma/client';
 
 import auth from '../../middlewares/auth';
 
-import { SpecializationController  } from './specialization.controller';
-
+import { SpecializationController } from './specialization.controller';
 
 const router = express.Router();
 
 router.post(
   '/',
   auth(userRole.ADMIN, userRole.SUPER_ADMIN),
-SpecializationController.createNewSpecialization
-
+  SpecializationController.createNewSpecialization
 );
 
 router.get(
@@ -24,7 +22,7 @@ router.get(
 
 router.patch(
   '/:specializationId',
-  auth( userRole.ADMIN, userRole.SUPER_ADMIN),
+  auth(userRole.ADMIN, userRole.SUPER_ADMIN),
   SpecializationController.updateSpecialization
 );
 
@@ -33,7 +31,5 @@ router.delete(
   auth(userRole.ADMIN, userRole.SUPER_ADMIN),
   SpecializationController.deleteSpecialization
 );
-
-
 
 export const SpecializationRoutes = router;

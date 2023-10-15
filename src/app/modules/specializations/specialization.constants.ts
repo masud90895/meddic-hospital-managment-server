@@ -3,9 +3,7 @@ export const specializationFilterableFields: string[] = [
   'searchTerm',
 ];
 
-export const specializationSearchableFields: string[] = [
-  'specializationName',
-];
+export const specializationSearchableFields: string[] = ['specializationName'];
 
 export const specializationFields: string[] = ['profileId'];
 export const specializationRelationalFieldsMapper: { [key: string]: string } = {

@@ -3,8 +3,10 @@ import { Prisma, Product } from '@prisma/client';
 import { Request } from 'express';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
+
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
+
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 import {
@@ -105,6 +107,15 @@ const getAllProducts = async (
     where: whereConditions,
     skip,
     take: limit,
+    include: {
+      service: {
+        select: {
+          serviceId: true,
+          serviceName: true,
+          serviceImage: true,
+        },
+      },
+    },
     orderBy:
       options.sortBy && options.sortOrder
         ? { [options.sortBy]: options.sortOrder }
@@ -131,6 +142,9 @@ const getSingleProduct = async (productId: string): Promise<Product | null> => {
   const result = await prisma.product.findUnique({
     where: {
       productId,
+    },
+    include: {
+      service: true,
     },
   });
 

@@ -1,18 +1,10 @@
-export const blogFilterableFields: string[] = [
-  'searchTerm',
-  'profileId',
-  'createdAt',
-];
-
-
 export const ServiceFilterableFields: string[] = [
   'searchTerm',
   'serviceName',
   'createdAt',
-  "location",
+  'location',
   'servicePrice',
 ];
-
 
 export const serviceSearchableFields: string[] = [
   'serviceName',

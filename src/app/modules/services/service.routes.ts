@@ -10,33 +10,23 @@ const router = express.Router();
 router.post(
   '/create-service',
   auth(userRole.ADMIN, userRole.SUPER_ADMIN),
- MedServiceController.createNewService
+  MedServiceController.createNewService
 );
 
-router.get(
-  '/',
-  auth(userRole.USER, userRole.ADMIN, userRole.SUPER_ADMIN, userRole.DOCTOR),
-  MedServiceController.getAllServices
-);
+router.get('/', MedServiceController.getAllServices);
 
-router.get(
-  '/:serviceId',
-  auth(userRole.USER, userRole.ADMIN, userRole.SUPER_ADMIN, userRole.DOCTOR),
-  MedServiceController.getSingleService
-);
+router.get('/:serviceId', MedServiceController.getSingleService);
 
 router.patch(
   '/:serviceId',
-  auth(userRole.ADMIN, userRole.SUPER_ADMIN, ),
+  auth(userRole.ADMIN, userRole.SUPER_ADMIN),
   MedServiceController.updateService
 );
 
 router.delete(
   '/:serviceId',
-  auth(userRole.ADMIN, userRole.SUPER_ADMIN, ),
+  auth(userRole.ADMIN, userRole.SUPER_ADMIN),
   MedServiceController.SingleServiceDelete
 );
-
-
 
 export const MedServiceRoutes = router;

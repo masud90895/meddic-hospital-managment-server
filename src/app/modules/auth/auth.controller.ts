@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 //! User Create
 
 const createNewUser = catchAsync(async (req: Request, res: Response) => {
-  const result = await AuthService.createNewUser(req);
+  const result = await AuthService.createNewUser(req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -42,7 +42,7 @@ const userLogin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// refreshToken
+// refreshToken -------------------------
 
 const refreshToken = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.cookies;

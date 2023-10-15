@@ -18,4 +18,3 @@ export type IUpdateSpecializationRequest = {
   description?: string;
   createdAt: string;
 };
-

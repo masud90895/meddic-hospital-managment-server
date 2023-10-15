@@ -43,27 +43,21 @@ const getSingleService = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const updateService = catchAsync(
-  async (req: Request, res: Response) => {
-    const { serviceId } = req.params;
-    const result = await MedService.updateService(
-      serviceId,
-      req.body
-    );
+const updateService = catchAsync(async (req: Request, res: Response) => {
+  const { serviceId } = req.params;
+  const result = await MedService.updateService(serviceId, req.body);
 
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Service Edited successfully',
-      data: result,
-    });
-  }
-);
-
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Service Edited successfully',
+    data: result,
+  });
+});
 
 const SingleServiceDelete = catchAsync(async (req: Request, res: Response) => {
   const { serviceId } = req.params;
-   await MedService.SingleServiceDelete(serviceId);
+  await MedService.SingleServiceDelete(serviceId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -77,5 +71,5 @@ export const MedServiceController = {
   getAllServices,
   getSingleService,
   SingleServiceDelete,
-  updateService
+  updateService,
 };

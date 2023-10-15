@@ -24,31 +24,32 @@ const createSpecialization = async (
   profileId: string,
   req: Request
 ): Promise<Specialization> => {
- 
   const data = req.body as ISpecializationRequest;
 
-  console.log("data",data);
+  console.log('data', data);
 
   const result = await prisma.$transaction(async transactionClient => {
-
     const newSpecializationData = {
       specializationName: data.specializationName,
       description: data.description,
     };
 
-    const createdSpecialization = await transactionClient.specialization.create({
-      data: newSpecializationData,
-    });
+    const createdSpecialization = await transactionClient.specialization.create(
+      {
+        data: newSpecializationData,
+      }
+    );
     return createdSpecialization;
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Specialization creation failed');
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Specialization creation failed'
+    );
   }
   return result;
 };
-
-
 
 const getAllSpecialization = async (
   filters: ISpecializationFilterRequest,
@@ -96,7 +97,7 @@ const getAllSpecialization = async (
 
   const result = await prisma.specialization.findMany({
     include: {
-      doctors:true
+      doctors: true,
     },
     where: whereConditions,
     skip,
@@ -123,18 +124,14 @@ const getAllSpecialization = async (
   };
 };
 
-
-
 // ! update Service ----------------------
 const updateSpecialization = async (
   specializationId: string,
   payload: Partial<IUpdateSpecializationRequest>
 ): Promise<Specialization | null> => {
-
-
   const isExist = await prisma.specialization.findUnique({
     where: {
-      specializationId
+      specializationId,
     },
   });
 
@@ -149,7 +146,7 @@ const updateSpecialization = async (
 
   const result = await prisma.specialization.update({
     where: {
-   specializationId
+      specializationId,
     },
     data: updateData,
   });
@@ -159,24 +156,22 @@ const updateSpecialization = async (
   return result;
 };
 
-
-
-
-const deleteSpecialization = async (specializationId: string): Promise<Specialization | null> => {
-
+const deleteSpecialization = async (
+  specializationId: string
+): Promise<Specialization | null> => {
   const isExist = await prisma.specialization.findUnique({
     where: {
-     specializationId
+      specializationId,
     },
-  })
+  });
 
-  if (!isExist) { 
+  if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'specialization Not Found');
   }
 
   const result = await prisma.specialization.delete({
     where: {
-      specializationId
+      specializationId,
     },
   });
 
@@ -187,12 +182,9 @@ const deleteSpecialization = async (specializationId: string): Promise<Specializ
   return result;
 };
 
-
-
-
 export const SpecializationService = {
   createSpecialization,
   getAllSpecialization,
   deleteSpecialization,
-  updateSpecialization
+  updateSpecialization,
 };

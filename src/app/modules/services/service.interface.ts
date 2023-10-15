@@ -7,12 +7,6 @@ export type IServiceCreateRequest = {
   servicePrice: number;
 };
 
-export type ICreateNewBlogResponse = {
-  serviceId: string;
-  categoryId: string;
-  createdAt: Date;
-};
-
 export type IServiceFilterRequest = {
   searchTerm?: string | undefined;
   categoryId?: string | undefined;

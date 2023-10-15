@@ -3,12 +3,13 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
-import { IRequestUser } from './user.interface';
 import { UserService } from './user.service';
+import { IRequestUser } from './user.interface';
 
 const getAllUsersController = catchAsync(
   async (req: Request, res: Response) => {
     const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+
     const result = await UserService.getAllUserService(options);
 
     sendResponse(res, {
@@ -44,7 +45,6 @@ const updateProfileInfo = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-
 const updateMyProfileInfo = catchAsync(async (req: Request, res: Response) => {
   const profileId = (req.user as IRequestUser).profileId;
   const payload = req.body;
@@ -57,7 +57,6 @@ const updateMyProfileInfo = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-
 
 const updateUserInfo = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
@@ -72,13 +71,9 @@ const updateUserInfo = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
-
 const getMyProfile = catchAsync(async (req: Request, res: Response) => {
   const userId = (req.user as IRequestUser).userId;
   const result = await UserService.getMyProfile(userId);
-
-  console.log(userId, result);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -92,7 +87,7 @@ export const UserController = {
   getAllUsersController,
   getSingleUser,
   updateProfileInfo,
-  updateMyProfileInfo,
   updateUserInfo,
+  updateMyProfileInfo,
   getMyProfile,
 };

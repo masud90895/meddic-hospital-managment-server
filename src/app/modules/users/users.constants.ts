@@ -24,12 +24,4 @@ export const studentRelationalFieldsMapper: { [key: string]: string } = {
   academicSemesterId: 'academicSemester',
 };
 
-export const ZodUserRoles = ['SUPER_ADMIN', 'ADMIN', 'USER', "DOCTOR"];
-
-
-export type IUpdateUserResponse = {
-  message: string;
-  updatedInfo: { email?: string; password?: string };
-};
-
-
+export const ZodUserRoles = ['SUPER_ADMIN', 'ADMIN', 'USER', 'DOCTOR'];

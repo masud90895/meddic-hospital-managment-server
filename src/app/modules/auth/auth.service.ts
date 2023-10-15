@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import bcrypt from 'bcrypt';
-import { Request } from 'express';
 import httpStatus from 'http-status';
 import { Secret } from 'jsonwebtoken';
 import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
-
 import prisma from '../../../shared/prisma';
 import {
   ILoginUserResponse,
@@ -18,9 +16,7 @@ import {
 import { userRole } from '@prisma/client';
 
 // ! user create
-const createNewUser = async (req: Request) => {
-  const data = (await req.body) as IUserCreate;
-
+const createNewUser = async (data: IUserCreate) => {
   const { password, email } = data;
 
   const hashedPassword = await bcrypt.hash(
@@ -54,8 +50,6 @@ const createNewUser = async (req: Request) => {
         role: true,
       },
     });
-
-    console.log('specializationId', data.specializationId);
 
     if (createdProfile.role == userRole.DOCTOR) {
       await transactionClient.doctor.create({
@@ -164,6 +158,8 @@ const userLogin = async (
 const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   // ! verify token
   let verifiedToken = null;
+
+  console.log(token, 'shafin=========');
 
   try {
     verifiedToken = jwtHelpers.verifyToken(

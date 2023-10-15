@@ -1,21 +1,21 @@
-// import { User } from '@prisma/client';
-import bcrypt from 'bcrypt';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import httpStatus from 'http-status';
-import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
-// import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
+
+import bcrypt from 'bcrypt';
+import config from '../../../config';
 import {
-  IUpdateProfileReqAndResponse,
-  // IUserUpdateReqAndResponse,
+  IProfileUpdateRequest,
+  IUpdateUserResponse,
+  IUserUpdateReqAndResponse,
   IUsersResponse,
 } from './user.interface';
-import { IProfileUpdateRequest } from '../auth/auth.interface';
 
-// ! getting all users 
-const getAllUserService = async (options: IPaginationOptions): Promise<any> => {
+// ! getting all users ----------------------------------------------------------------------->>>
+const getAllUserService = async (options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   const result = await prisma.user.findMany({
@@ -24,9 +24,11 @@ const getAllUserService = async (options: IPaginationOptions): Promise<any> => {
     select: {
       userId: true,
       email: true,
-      profile: true,
       createdAt: true,
-      updatedAt: true,
+      profile: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
     },
   });
   const total = await prisma.user.count();
@@ -44,12 +46,17 @@ const getAllUserService = async (options: IPaginationOptions): Promise<any> => {
   };
 };
 
-// ! getting single user data 
-const getSingleUser = async (userId: string): Promise<any | null> => {
+// ! getting single user data -------------------------------------------------------->>>
+const getSingleUser = async (
+  userId: string
+): Promise<IUsersResponse | null> => {
   // Check if the user exists
   const existingUser = await prisma.user.findUnique({
     where: {
-      userId
+      userId,
+    },
+    select: {
+      profileId: true,
     },
   });
 
@@ -59,8 +66,9 @@ const getSingleUser = async (userId: string): Promise<any | null> => {
 
   const result = await prisma.user.findUnique({
     where: {
-    userId
+      profileId: existingUser.profileId!,
     },
+
     select: {
       userId: true,
       email: true,
@@ -71,14 +79,11 @@ const getSingleUser = async (userId: string): Promise<any | null> => {
   });
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not Found !!');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Profile not Found !!');
   }
 
   return result;
 };
-
-
-// ! Update Profile data 
 
 const updateProfileInfo = async (
   profileId: string,
@@ -150,10 +155,6 @@ const updateProfileInfo = async (
     updatedInfo: updateData,
   };
 };
-
-
-
-
 const updateMyProfileInfo = async (
   profileId: string,
   payload: IProfileUpdateRequest
@@ -225,18 +226,12 @@ const updateMyProfileInfo = async (
   };
 };
 
-
-// ! update user info 
+// ! update user info -------------------------------------------------------->>>
 
 const updateUserInfo = async (
   userId: string,
-  { password, email }: Partial<{ email: string; password: string }>
-): Promise<{
-  message: string;
-  updatedInfo: { email?: string; password?: string };
-}> => {
-
-
+  { password, email }: IUserUpdateReqAndResponse
+): Promise<IUpdateUserResponse> => {
   const existingUser = await prisma.user.findUnique({ where: { userId } });
 
   if (!existingUser) {
@@ -282,14 +277,11 @@ const updateUserInfo = async (
   };
 };
 
-
-
-
-//! get my profile 
-const getMyProfile = async (userId: string): Promise<any | null> => {
+//! get my profile ----------------------------------------------------------------------->>>
+const getMyProfile = async (userId: string): Promise<IUsersResponse | null> => {
   const result = await prisma.user.findUnique({
     where: {
-      userId
+      userId,
     },
     select: {
       userId: true,
@@ -312,7 +304,7 @@ export const UserService = {
   getAllUserService,
   getSingleUser,
   updateProfileInfo,
-  updateMyProfileInfo,
   updateUserInfo,
   getMyProfile,
+  updateMyProfileInfo,
 };
