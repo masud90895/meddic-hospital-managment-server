@@ -7,6 +7,7 @@ import { ProductsRoutes } from '../modules/products/products.routes';
 import { SpecializationRoutes } from '../modules/specializations/specialization.routes';
 import { BlogRoutes } from '../modules/blogs/blogs.routes';
 import { SlotRoutes } from '../modules/slots/slots.routes';
+import { ReviewAndRatingRoutes } from '../modules/reviewAndRatings/reviewAndRating.routes';
 
 const router = express.Router();
 
@@ -42,6 +43,10 @@ const moduleRoutes = [
   {
     path: '/slots',
     route: SlotRoutes,
+  },
+  {
+    path: '/review-ratings',
+    route: ReviewAndRatingRoutes,
   },
 ];
 
