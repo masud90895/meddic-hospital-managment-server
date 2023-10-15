@@ -1,0 +1,230 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId    String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // 
+  profileId String?  @unique
+  profile   Profile? @relation(fields: [profileId], references: [profileId])
+
+  @@map("users")
+}
+
+model Profile {
+  profileId          String               @id @default(uuid())
+  firstName          String
+  lastName           String
+  profileImage       String
+  role               userRole
+  contactNumber      String?
+  address            String?
+  coverPhoto         String?
+  bloodGroup         String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  user               User?
+  reviewAndRatings   ReviewAndRatings[]
+  appointmentBooking AppointmentBooking[]
+  products           Product[]
+  blogs              Blog[]
+  feedBackForms      FeedBackForm[]
+  Faq                Faq[]
+  Doctor             Doctor?
+
+  @@map("profiles")
+}
+
+model Doctor {
+  doctorId         String         @id @default(uuid())
+  qualification    String
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  // 
+  profileId        String         @unique
+  profile          Profile        @relation(fields: [profileId], references: [profileId])
+  specializationId String
+  specialization   Specialization @relation(fields: [specializationId], references: [specializationId])
+
+  @@map("doctors")
+}
+
+model Service {
+  serviceId         String               @id @default(uuid())
+  serviceName       String               @unique
+  description       String
+  serviceImage      String
+  servicePrice      Int
+  location          String
+  serviceStatus     serviceStatus        @default(available)
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  // 
+  categoryId        String
+  category          Category             @relation(fields: [categoryId], references: [categoryId])
+  appointmentBooked AppointmentBooking[]
+  products          Product[]
+  reviewAndRatings  ReviewAndRatings[]
+  feedBackForms     FeedBackForm[]
+
+  @@map("services")
+}
+
+model Category {
+  categoryId   String    @id @default(uuid())
+  categoryName String    @unique
+  description  String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  services     Service[]
+
+  @@map("categories")
+}
+
+model ReviewAndRatings {
+  reviewId      String   @id @default(uuid())
+  reviewComment String
+  reviewRating  String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  // relations
+  profileId     String
+  profile       Profile  @relation(fields: [profileId], references: [profileId])
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [serviceId])
+
+  @@map("reviews_and_ratings")
+}
+
+model Blog {
+  blogId          String   @id @default(uuid())
+  blogTitle       String
+  blogDescription String
+  blogImage       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  // 
+  profileId       String
+  profile         Profile  @relation(fields: [profileId], references: [profileId])
+
+  // relations
+  @@map("blogs")
+}
+
+model Faq {
+  faqId          String   @id @default(uuid())
+  faqTitle       String
+  faqDescription String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  profileId      String
+  profile        Profile  @relation(fields: [profileId], references: [profileId])
+
+  // relations
+  @@map("faqs")
+}
+
+model Product {
+  productId          String   @id @default(uuid())
+  productTitle       String
+  productDescription String
+  productImage       String
+  productPrice       Int
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  // relations
+  serviceId          String
+  service            Service  @relation(fields: [serviceId], references: [serviceId])
+  // 
+  profileId          String
+  profile            Profile  @relation(fields: [profileId], references: [profileId])
+
+  @@map("products")
+}
+
+model Specialization {
+  specializationId   String   @id @default(uuid())
+  specializationName String   @unique
+  description        String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  doctors            Doctor[]
+
+  @@map("specializations")
+}
+
+model AppointmentBooking {
+  appointmentId     String            @id @default(uuid())
+  appointmentDate   DateTime
+  appointmentStatus appointmentStatus @default(pending)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  profileId         String
+  profile           Profile           @relation(fields: [profileId], references: [profileId])
+  serviceId         String
+  service           Service           @relation(fields: [serviceId], references: [serviceId])
+  slotId            String
+  slot              TimeSlot          @relation(fields: [slotId], references: [slotId])
+
+  @@map("appointment_bookings")
+}
+
+model TimeSlot {
+  slotId       String               @id @default(uuid())
+  startTime    DateTime             @unique
+  endTime      DateTime             @unique
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  // 
+  appointments AppointmentBooking[]
+
+  @@map("time_slots")
+}
+
+model FeedBackForm {
+  feedbackId      String   @id @default(uuid())
+  feedbackComment String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  // 
+  serviceId       String
+  service         Service  @relation(fields: [serviceId], references: [serviceId])
+  // 
+  profileId       String
+  profile         Profile  @relation(fields: [profileId], references: [profileId])
+
+  // 
+  @@map("feedback_forms")
+}
+
+enum userRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+  DOCTOR
+}
+
+enum appointmentStatus {
+  cancelled
+  pending
+  approved
+  rejected
+}
+
+enum serviceStatus {
+  available
+  upcoming
+  rejected
+}
