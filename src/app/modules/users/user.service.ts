@@ -299,6 +299,23 @@ const getMyProfile = async (userId: string): Promise<IUsersResponse | null> => {
   return result;
 };
 
+// delete user -------------------------------------------------------->>>
+const deleteUser = async (userId: string) => {
+  const existingUser = await prisma.user.findUnique({ where: { userId } });
+
+  if (!existingUser) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found!');
+  }
+
+  const result = await prisma.user.delete({ where: { userId } });
+
+  if (!result) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User delete failed');
+  }
+
+  return result;
+};
+
 // ! --------------- exports all user service
 export const UserService = {
   getAllUserService,
@@ -307,4 +324,5 @@ export const UserService = {
   updateUserInfo,
   getMyProfile,
   updateMyProfileInfo,
+  deleteUser,
 };

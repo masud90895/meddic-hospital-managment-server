@@ -49,4 +49,11 @@ router.get(
   UserController.getSingleUser
 );
 
+// delete user
+router.delete(
+  '/delete/:userId',
+  auth(userRole.ADMIN, userRole.SUPER_ADMIN),
+  UserController.deleteUser
+);
+
 export const UserRoutes = router;
