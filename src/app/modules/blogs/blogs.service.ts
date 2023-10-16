@@ -154,8 +154,61 @@ const getSingleBlog = async (blogId: string): Promise<Blog | null> => {
   return result;
 };
 
+// update
+const updateBlogDetails = async (
+  blogId: string,
+  updatedData: IBlogCreateRequest
+): Promise<Blog> => {
+  const existingBlog = await prisma.blog.findUnique({
+    where: {
+      blogId,
+    },
+  });
+
+  if (!existingBlog) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Blog not found');
+  }
+
+  if (Object.keys(updatedData).length === 0) {
+    return existingBlog;
+  }
+
+  const result = await prisma.blog.update({
+    where: {
+      blogId,
+    },
+    data: updatedData,
+  });
+
+  return result;
+};
+
+// delete
+const deleteBlog = async (blogId: string): Promise<Blog> => {
+  //
+  const isExistBlog = await prisma.blog.findUnique({
+    where: {
+      blogId,
+    },
+  });
+
+  if (!isExistBlog) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Blog not found');
+  }
+
+  const result = await prisma.blog.delete({
+    where: {
+      blogId,
+    },
+  });
+
+  return result;
+};
+
 export const BlogService = {
   createNewBlog,
   getAllBlogs,
   getSingleBlog,
+  updateBlogDetails,
+  deleteBlog,
 };

@@ -20,5 +20,18 @@ router.post(
 router.get('/', BlogsController.getAllBlogs);
 router.get('/:blogId', BlogsController.getSingleBlog);
 
+// update
+router.patch(
+  '/update/:blogId',
+  auth(userRole.ADMIN, userRole.SUPER_ADMIN),
+  BlogsController.updateBlogDetails
+);
+
+// delete
+router.delete(
+  '/delete/:blogId',
+  auth(userRole.ADMIN, userRole.SUPER_ADMIN),
+  BlogsController.deleteBlog
+);
+
 export const BlogRoutes = router;
- 
