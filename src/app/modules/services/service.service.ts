@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Request } from 'express';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 
@@ -25,9 +24,9 @@ import {
 // modules
 
 const createNewService = async (
-  req: Request
+  data: IServiceCreateRequest
 ): Promise<ICreateNewServiceResponse> => {
-  const data = req.body as IServiceCreateRequest;
+  // const data = req.body as IServiceCreateRequest;
 
   const serviceData = {
     serviceName: data.serviceName,
