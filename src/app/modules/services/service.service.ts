@@ -118,8 +118,11 @@ const getAllServices = async (
     include: {
       category: true,
       products: true,
-      reviewAndRatings: true,
-      feedBackForms: true,
+      reviewAndRatings: {
+        include: {
+          profile: true,
+        },
+      },
       appointmentBooked: true,
     },
     where: whereConditions,
@@ -153,6 +156,14 @@ const getSingleService = async (serviceId: string): Promise<Service | null> => {
   const result = await prisma.service.findUnique({
     where: {
       serviceId,
+    },
+    include: {
+      reviewAndRatings: {
+        include: {
+          profile: true,
+        },
+      },
+      appointmentBooked: true,
     },
   });
 

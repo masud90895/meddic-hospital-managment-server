@@ -10,14 +10,13 @@ const router = express.Router();
 
 router.post(
   '/add-feedback',
-  auth(userRole.USER),
+  auth(userRole.USER, userRole.ADMIN, userRole.SUPER_ADMIN, userRole.DOCTOR),
   validateRequest(FeedBackValidation.createFeedBack),
   FeedBackController.createNewFeedBack
 );
 
 router.get(
   '/',
-
   FeedBackController.getAllFeedBack
 );
 

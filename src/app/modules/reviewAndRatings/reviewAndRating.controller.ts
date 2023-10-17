@@ -50,8 +50,35 @@ const singleReviewDelete = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// get all reviews
+const getAllReviews = catchAsync(async (req: Request, res: Response) => {
+  const result = await RatingAndReviewService.getAllReviews();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'All Reviews',
+    data: result,
+  });
+});
+
+// get only user reviews
+const getOnlyUserReviews = catchAsync(async (req: Request, res: Response) => {
+  const profileId = (req.user as IRequestUser).profileId;
+  const result = await RatingAndReviewService.getOnlyUserReviews(profileId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'All Reviews',
+    data: result,
+  });
+});
+
 export const ReviewController = {
   createNewSlot,
   updateReview,
   singleReviewDelete,
+  getAllReviews,
+  getOnlyUserReviews,
 };

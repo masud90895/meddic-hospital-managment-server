@@ -113,8 +113,69 @@ const SingleRatingAndReviewDelete = async (
   return result;
 };
 
+// get all reviews
+const getAllReviews = async () => {
+  const result = await prisma.reviewAndRatings.findMany({
+    select: {
+      reviewComment: true,
+      reviewRating: true,
+      createdAt: true,
+      service: {
+        select: {
+          serviceName: true,
+          serviceId: true,
+        },
+      },
+      profile: {
+        select: {
+          firstName: true,
+          lastName: true,
+          profileId: true,
+        },
+      },
+    },
+  });
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Review Not Found');
+  }
+  return result;
+};
+
+// get only user reviews
+const getOnlyUserReviews = async (profileId: string) => {
+  const result = await prisma.reviewAndRatings.findMany({
+    where: {
+      profileId,
+    },
+    select: {
+      reviewComment: true,
+      reviewRating: true,
+      createdAt: true,
+      service: {
+        select: {
+          serviceName: true,
+          serviceId: true,
+        },
+      },
+      profile: {
+        select: {
+          firstName: true,
+          lastName: true,
+          profileId: true,
+        },
+      },
+    },
+  });
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Review Not Found');
+  }
+  return result;
+};
+
 export const RatingAndReviewService = {
   createNewRatingAndReview,
   updateRatingAndReview,
   SingleRatingAndReviewDelete,
+  getAllReviews,
+  getOnlyUserReviews,
 };
