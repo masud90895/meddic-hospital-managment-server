@@ -93,6 +93,7 @@ const updateProfileInfo = async (
   updatedInfo: IProfileUpdateRequest;
 }> => {
   // Ensure ProfileId cannot be changed
+ 
   if ('profileId' in payload) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Profile ID cannot be changed');
   }
@@ -109,7 +110,15 @@ const updateProfileInfo = async (
   }
 
   // Extract relevant properties from the payload
-  const { firstName, lastName, profileImage, role } = payload;
+  const {
+    firstName,
+    lastName,
+    profileImage,
+    role,
+    contactNumber,
+    address,
+    bloodGroup,
+  } = payload;
 
   // Build the update data based on provided fields
   const updateData: Partial<IProfileUpdateRequest> = {};
@@ -129,6 +138,17 @@ const updateProfileInfo = async (
   if (role !== undefined) {
     updateData.role = role;
   }
+  if(contactNumber !== undefined){
+    updateData.contactNumber = contactNumber;
+  }
+  if(address !== undefined){
+    updateData.address = address;
+  }
+  if(bloodGroup !== undefined){
+    updateData.bloodGroup = bloodGroup;
+  }
+
+
 
   // Check if any data is provided for update
   if (Object.keys(updateData).length === 0) {

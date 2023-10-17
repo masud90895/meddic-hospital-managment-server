@@ -24,8 +24,8 @@ CREATE TABLE "profiles" (
     "profileId" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
-    "profileImage" TEXT NOT NULL,
-    "role" "userRole" NOT NULL,
+    "profileImage" TEXT,
+    "role" "userRole" NOT NULL DEFAULT 'USER',
     "contactNumber" TEXT,
     "address" TEXT,
     "coverPhoto" TEXT,
@@ -165,15 +165,15 @@ CREATE TABLE "time_slots" (
 );
 
 -- CreateTable
-CREATE TABLE "feedback_forms" (
+CREATE TABLE "feedbacks" (
     "feedbackId" TEXT NOT NULL,
-    "feedbackComment" TEXT NOT NULL,
+    "feedbackDescription" TEXT NOT NULL,
+    "feedbackSubject" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "serviceId" TEXT NOT NULL,
     "profileId" TEXT NOT NULL,
 
-    CONSTRAINT "feedback_forms_pkey" PRIMARY KEY ("feedbackId")
+    CONSTRAINT "feedbacks_pkey" PRIMARY KEY ("feedbackId")
 );
 
 -- CreateIndex
@@ -240,7 +240,4 @@ ALTER TABLE "appointment_bookings" ADD CONSTRAINT "appointment_bookings_serviceI
 ALTER TABLE "appointment_bookings" ADD CONSTRAINT "appointment_bookings_slotId_fkey" FOREIGN KEY ("slotId") REFERENCES "time_slots"("slotId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "feedback_forms" ADD CONSTRAINT "feedback_forms_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "services"("serviceId") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "feedback_forms" ADD CONSTRAINT "feedback_forms_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "feedbacks" ADD CONSTRAINT "feedbacks_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Request } from 'express';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
-import { FileUploadHelper } from '../../../helpers/FileUploadHelper';
-import { IUploadFile } from '../../../interfaces/file';
 import prisma from '../../../shared/prisma';
 import {
   IBlogCreateRequest,
@@ -26,15 +23,9 @@ import {
 
 const createNewBlog = async (
   profileId: string,
-  req: Request
+  data: IBlogCreateRequest
 ): Promise<ICreateNewBlogResponse> => {
-  const file = req.file as IUploadFile;
-  const uploadedImage = await FileUploadHelper.uploadImageToCloudinary(file);
-
-  if (uploadedImage) {
-    req.body.blogImage = uploadedImage.secure_url;
-  }
-  const data = req.body as IBlogCreateRequest;
+ 
 
   const result = await prisma.$transaction(async transactionClient => {
     const createdBlog = await transactionClient.blog.create({

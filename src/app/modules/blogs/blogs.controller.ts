@@ -7,9 +7,9 @@ import { BlogService } from './blogs.service';
 import pick from '../../../shared/pick';
 import { blogFilterableFields } from './blogs.constants';
 
-const createNewStyle = catchAsync(async (req: Request, res: Response) => {
+const createBlog = catchAsync(async (req: Request, res: Response) => {
   const profileId = (req.user as IRequestUser).profileId;
-  const result = await BlogService.createNewBlog(profileId, req);
+  const result = await BlogService.createNewBlog(profileId, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -73,7 +73,7 @@ const deleteBlog = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const BlogsController = {
-  createNewStyle,
+  createBlog,
   getAllBlogs,
   getSingleBlog,
   updateBlogDetails,
