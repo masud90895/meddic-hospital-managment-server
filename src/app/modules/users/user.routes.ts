@@ -21,9 +21,10 @@ router.get(
   auth(userRole.ADMIN, userRole.SUPER_ADMIN, userRole.USER, userRole.DOCTOR),
   UserController.getMyProfile
 );
+
 // !  Update  User data ------------------------------>>>
 router.patch(
-  '/update-user/:userId',
+  '/update-my-email-password',
   auth(userRole.ADMIN, userRole.SUPER_ADMIN),
   validateRequest(UserValidation.updateUser),
   UserController.updateUserInfo

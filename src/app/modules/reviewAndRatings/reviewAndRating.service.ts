@@ -151,6 +151,7 @@ const getOnlyUserReviews = async (profileId: string) => {
       reviewComment: true,
       reviewRating: true,
       createdAt: true,
+      reviewId: true,
       service: {
         select: {
           serviceName: true,
@@ -162,6 +163,7 @@ const getOnlyUserReviews = async (profileId: string) => {
           firstName: true,
           lastName: true,
           profileId: true,
+          profileImage: true,
         },
       },
     },
