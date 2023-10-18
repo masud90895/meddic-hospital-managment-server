@@ -48,6 +48,7 @@ const updateProfileInfo = catchAsync(async (req: Request, res: Response) => {
 const updateMyProfileInfo = catchAsync(async (req: Request, res: Response) => {
   const profileId = (req.user as IRequestUser).profileId;
   const payload = req.body;
+  
   const result = await UserService.updateMyProfileInfo(profileId, payload);
 
   sendResponse(res, {
@@ -59,8 +60,9 @@ const updateMyProfileInfo = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateUserInfo = catchAsync(async (req: Request, res: Response) => {
-  const { userId } = req.params;
+  const userId = (req.user as IRequestUser).userId;
   const payload = req.body;
+
   const result = await UserService.updateUserInfo(userId, payload);
 
   sendResponse(res, {

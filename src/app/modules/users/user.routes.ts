@@ -25,7 +25,7 @@ router.get(
 // !  Update  User data ------------------------------>>>
 router.patch(
   '/update-my-email-password',
-  auth(userRole.ADMIN, userRole.SUPER_ADMIN),
+  auth(userRole.ADMIN, userRole.SUPER_ADMIN, userRole.USER),
   validateRequest(UserValidation.updateUser),
   UserController.updateUserInfo
 );

@@ -5,7 +5,7 @@ CREATE TYPE "userRole" AS ENUM ('USER', 'ADMIN', 'SUPER_ADMIN', 'DOCTOR');
 CREATE TYPE "appointmentStatus" AS ENUM ('cancelled', 'pending', 'approved', 'rejected');
 
 -- CreateEnum
-CREATE TYPE "serviceStatus" AS ENUM ('available', 'upcoming', 'rejected');
+CREATE TYPE "serviceStatus" AS ENUM ('available', 'upcoming');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -156,8 +156,7 @@ CREATE TABLE "appointment_bookings" (
 -- CreateTable
 CREATE TABLE "time_slots" (
     "slotId" TEXT NOT NULL,
-    "startTime" TIMESTAMP(3) NOT NULL,
-    "endTime" TIMESTAMP(3) NOT NULL,
+    "slotTime" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -167,8 +166,8 @@ CREATE TABLE "time_slots" (
 -- CreateTable
 CREATE TABLE "feedbacks" (
     "feedbackId" TEXT NOT NULL,
-    "feedbackDescription" TEXT NOT NULL,
     "feedbackSubject" TEXT NOT NULL,
+    "feedbackDescription" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "profileId" TEXT NOT NULL,
@@ -193,12 +192,6 @@ CREATE UNIQUE INDEX "categories_categoryName_key" ON "categories"("categoryName"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "specializations_specializationName_key" ON "specializations"("specializationName");
-
--- CreateIndex
-CREATE UNIQUE INDEX "time_slots_startTime_key" ON "time_slots"("startTime");
-
--- CreateIndex
-CREATE UNIQUE INDEX "time_slots_endTime_key" ON "time_slots"("endTime");
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("profileId") ON DELETE SET NULL ON UPDATE CASCADE;

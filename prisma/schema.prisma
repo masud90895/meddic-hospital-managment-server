@@ -40,10 +40,9 @@ model Profile {
   appointmentBooking AppointmentBooking[]
   products           Product[]
   blogs              Blog[]
-
-  faqs      Faq[]
-  Doctor    Doctor?
-  feedBacks FeedBack[]
+  faqs               Faq[]
+  Doctor             Doctor?
+  feedBacks          FeedBack[]
 
   @@map("profiles")
 }
@@ -72,7 +71,6 @@ model Service {
   serviceStatus     serviceStatus        @default(available)
   createdAt         DateTime             @default(now())
   updatedAt         DateTime             @updatedAt
-  // 
   categoryId        String
   category          Category             @relation(fields: [categoryId], references: [categoryId])
   appointmentBooked AppointmentBooking[]
@@ -183,8 +181,7 @@ model AppointmentBooking {
 
 model TimeSlot {
   slotId       String               @id @default(uuid())
-  startTime    DateTime             @unique
-  endTime      DateTime             @unique
+  slotTime     String
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @updatedAt
   // 
@@ -195,13 +192,12 @@ model TimeSlot {
 
 model FeedBack {
   feedbackId          String   @id @default(uuid())
-  feedbackDescription String
   feedbackSubject     String
+  feedbackDescription String
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
   profileId           String
   profile             Profile  @relation(fields: [profileId], references: [profileId])
-
   // 
   @@map("feedbacks")
 }
@@ -223,5 +219,4 @@ enum appointmentStatus {
 enum serviceStatus {
   available
   upcoming
-  rejected
 }
