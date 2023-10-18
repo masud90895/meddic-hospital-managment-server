@@ -20,6 +20,12 @@ router.get(
   // validateRequest(AppointmentBookingValidation.createAppointmentBooking),
   AppointmentBookingController.getAllAppointment
 );
+router.get(
+  '/my-booking',
+  auth(userRole.USER, userRole.ADMIN, userRole.SUPER_ADMIN),
+  // validateRequest(AppointmentBookingValidation.createAppointmentBooking),
+  AppointmentBookingController.getMyAppointment
+);
 
 router.patch(
   '/:appointmentId',

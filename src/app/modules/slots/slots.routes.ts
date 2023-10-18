@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get(
   '/',
-  auth(userRole.USER, userRole.ADMIN, userRole.DOCTOR, userRole.SUPER_ADMIN),
+  // auth(userRole.USER, userRole.ADMIN, userRole.DOCTOR, userRole.SUPER_ADMIN),
   SlotController.getAllSlots
 );
 router.post(

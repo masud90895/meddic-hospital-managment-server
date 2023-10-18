@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
 export type ICreateAppointmentBookingReq = {
   serviceId: string;
   appointmentDate: Date;
   slotId: string;
+  appointmentStatus: appointmentStatus; 
 };
 
 export type ICreateAppointmentBookingRes = {
@@ -13,6 +15,7 @@ export type IUpdateAppointmentBookingReq = {
   serviceId?: string;
   appointmentDate?: Date;
   slotId?: string;
+  appointmentStatus?: appointmentStatus; 
 };
 
 export type IAppointmentFilterRequest = {
@@ -20,4 +23,15 @@ export type IAppointmentFilterRequest = {
   serviceId?: string | undefined;
   appointmentDate?: string | undefined;
   slotId?: string | undefined;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  serviceName?: string | undefined;
+  appointmentStatus?: appointmentStatus | undefined;
 };
+
+
+export enum appointmentStatus {
+  pending = "pending",
+  approved = "approved",
+  rejected = "rejected",
+}

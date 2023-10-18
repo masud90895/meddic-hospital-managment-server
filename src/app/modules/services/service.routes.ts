@@ -32,4 +32,4 @@ router.delete(
   MedServiceController.SingleServiceDelete
 );
 
-export const MedServiceRoutes = router;
+export const ServiceRoutes = router;

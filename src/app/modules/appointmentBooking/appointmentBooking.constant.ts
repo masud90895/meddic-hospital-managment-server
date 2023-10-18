@@ -1,17 +1,16 @@
 export const appointmentFilterableFields: string[] = [
-  'slotId',
-  'searchTerm',
-  'appointmentDate',
-  'serviceId',
-];
+    'searchTerm',
+    'firstName',  
+   'appointmentStatus'
+  ];
+  
+  export const appointmentSearchableFields: string[] = [
+    "appointmentStatus"
+  ];
+  
 
-export const appointmentSearchableFields: string[] = [
-  'serviceId',
-  'appointmentDate',
-  'slotId',
-];
-
-export const appointmentFields: string[] = ['profileId'];
-export const appointmentRelationalFieldsMapper: { [key: string]: string } = {
-  profileId: 'profileId',
-};
+  export const appointmentFields: string[] = ['profileId'];
+  export const appointmentRelationalFieldsMapper: { [key: string]: string } = {
+    profileId: 'profileId'
+  };
+  
