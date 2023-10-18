@@ -2,7 +2,6 @@ import express from 'express';
 
 import auth from '../../middlewares/auth';
 import { MedServiceController } from './service.controller';
-// import { MedServiceValidation } from './service.validation';
 import { userRole } from '@prisma/client';
 
 const router = express.Router();
@@ -15,7 +14,11 @@ router.post(
 
 router.get('/', MedServiceController.getAllServices);
 
-router.get('/:serviceId', MedServiceController.getSingleService);
+router.get(
+  '/:serviceId',
+  auth(userRole.USER, userRole.ADMIN, userRole.SUPER_ADMIN, userRole.DOCTOR),
+  MedServiceController.getSingleService
+);
 
 router.patch(
   '/:serviceId',

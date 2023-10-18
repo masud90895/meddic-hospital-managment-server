@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { Request } from 'express';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
-
+import { FileUploadHelper } from '../../../helpers/FileUploadHelper';
+import { IUploadFile } from '../../../interfaces/file';
 import prisma from '../../../shared/prisma';
 import {
   IServiceFilterRequest,
+  ICreateNewBlogResponse,
   IServiceCreateRequest,
   IUpdateServiceRequest,
   ICreateNewServiceResponse,
@@ -24,9 +27,10 @@ import {
 // modules
 
 const createNewService = async (
-  data: IServiceCreateRequest
+  req: Request
 ): Promise<ICreateNewServiceResponse> => {
-  // const data = req.body as IServiceCreateRequest;
+
+  const data = req.body as IServiceCreateRequest;
 
   const serviceData = {
     serviceName: data.serviceName,
@@ -35,6 +39,7 @@ const createNewService = async (
     location: data.location,
     categoryId: data.categoryId,
     servicePrice: data.servicePrice,
+    serviceStatus: data.serviceStatus,
   };
 
   const result = await prisma.$transaction(async transactionClient => {
@@ -62,6 +67,8 @@ const createNewService = async (
   return result;
 };
 
+
+
 const getAllServices = async (
   filters: IServiceFilterRequest,
   options: IPaginationOptions
@@ -83,6 +90,7 @@ const getAllServices = async (
     });
   }
 
+
   if (servicePrice) {
     andConditions.push({
       servicePrice: {
@@ -90,6 +98,8 @@ const getAllServices = async (
       },
     });
   }
+
+
 
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
@@ -111,6 +121,10 @@ const getAllServices = async (
     });
   }
 
+
+
+
+
   const whereConditions: Prisma.ServiceWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
@@ -118,11 +132,8 @@ const getAllServices = async (
     include: {
       category: true,
       products: true,
-      reviewAndRatings: {
-        include: {
-          profile: true,
-        },
-      },
+      reviewAndRatings: true,
+      feedBackForms: true,
       appointmentBooked: true,
     },
     where: whereConditions,
@@ -156,15 +167,7 @@ const getSingleService = async (serviceId: string): Promise<Service | null> => {
   const result = await prisma.service.findUnique({
     where: {
       serviceId,
-    },
-    include: {
-      reviewAndRatings: {
-        include: {
-          profile: true,
-        },
-      },
-      appointmentBooked: true,
-    },
+    }
   });
 
   if (!result) {
@@ -178,9 +181,10 @@ const updateService = async (
   serviceId: string,
   payload: Partial<IUpdateServiceRequest>
 ): Promise<Service | null> => {
+
   const isExistService = await prisma.service.findUnique({
     where: {
-      serviceId,
+      serviceId
     },
   });
 
@@ -195,6 +199,7 @@ const updateService = async (
     location: payload?.location,
     categoryId: payload?.categoryId,
     servicePrice: payload?.servicePrice,
+    serviceStatus: payload?.serviceStatus
   };
 
   const result = await prisma.service.update({
@@ -210,18 +215,18 @@ const updateService = async (
   return result;
 };
 
+
 // ! delete Service ----------------------
 
-const SingleServiceDelete = async (
-  serviceId: string
-): Promise<Service | null> => {
+const SingleServiceDelete = async (serviceId: string): Promise<Service | null> => {
   //
 
   const isExistService = await prisma.service.findUnique({
     where: {
       serviceId,
-    },
+    }
   });
+
 
   if (!isExistService) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Service Not Found !!!');
@@ -229,21 +234,24 @@ const SingleServiceDelete = async (
 
   const result = await prisma.service.delete({
     where: {
-      serviceId,
-    },
-  });
+      serviceId
+  }
+})
 
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Service Not deleted !!!');
-  }
+  throw new ApiError(httpStatus.NOT_FOUND, 'Service Not deleted !!!')
+}
 
   return result;
 };
+
+
+
 
 export const MedService = {
   createNewService,
   getAllServices,
   getSingleService,
   SingleServiceDelete,
-  updateService,
+  updateService
 };
