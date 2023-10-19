@@ -30,7 +30,7 @@ router.get(
 // get all appoinment length
 router.get(
   '/all-booking-length',
-  auth(userRole.ADMIN, userRole.SUPER_ADMIN),
+  auth(userRole.USER, userRole.ADMIN, userRole.SUPER_ADMIN),
   AppointmentBookingController.getAllAppointmentLength
 );
 
