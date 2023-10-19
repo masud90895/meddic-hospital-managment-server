@@ -89,6 +89,37 @@ const deleteAppointment = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// get all appoinment length
+const getAllAppointmentLength = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await AppointmentBookingService.getAllAppointmentLength();
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'fetched successfully',
+      data: result,
+    });
+  }
+);
+
+// get my pending and rejected appointmentStatus length like : pending :1 , rejected : 2 
+const getMyPendingAndRejectedAppointmentLength = catchAsync(
+  async (req: Request, res: Response) => {
+    const profileId = (req.user as IRequestUser).profileId;
+    const result = await AppointmentBookingService.getMyAppointmentLength(
+      profileId
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'fetched successfully',
+      data: result,
+    });
+  }
+);
+
 
 export const AppointmentBookingController = {
   createNewAppointmentBooking,
@@ -96,4 +127,6 @@ export const AppointmentBookingController = {
   updateAppointment,
   deleteAppointment,
   getMyAppointment,
+  getAllAppointmentLength,
+  getMyPendingAndRejectedAppointmentLength
 };

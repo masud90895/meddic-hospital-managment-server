@@ -14,11 +14,7 @@ router.post(
 
 router.get('/', MedServiceController.getAllServices);
 
-router.get(
-  '/:serviceId',
-  auth(userRole.USER, userRole.ADMIN, userRole.SUPER_ADMIN, userRole.DOCTOR),
-  MedServiceController.getSingleService
-);
+router.get('/:serviceId', MedServiceController.getSingleService);
 
 router.patch(
   '/:serviceId',

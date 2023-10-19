@@ -158,7 +158,14 @@ const getSingleService = async (serviceId: string): Promise<Service | null> => {
     include: {
       category: true,
       products: true,
-      reviewAndRatings: true,
+      reviewAndRatings: {
+        include: {
+          profile: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      },
       appointmentBooked: true,
     },
   });

@@ -20,11 +20,25 @@ router.get(
   // validateRequest(AppointmentBookingValidation.createAppointmentBooking),
   AppointmentBookingController.getAllAppointment
 );
+
 router.get(
   '/my-booking',
   auth(userRole.USER, userRole.ADMIN, userRole.SUPER_ADMIN),
   // validateRequest(AppointmentBookingValidation.createAppointmentBooking),
   AppointmentBookingController.getMyAppointment
+);
+// get all appoinment length
+router.get(
+  '/all-booking-length',
+  auth(userRole.ADMIN, userRole.SUPER_ADMIN),
+  AppointmentBookingController.getAllAppointmentLength
+);
+
+// get my pending and rejected appointmentStatus length like : pending :1 , rejected : 2
+router.get(
+  '/my-booking-length',
+  auth(userRole.USER, userRole.ADMIN, userRole.SUPER_ADMIN),
+  AppointmentBookingController.getMyPendingAndRejectedAppointmentLength
 );
 
 router.patch(
