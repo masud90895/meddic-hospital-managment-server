@@ -155,6 +155,12 @@ const getSingleService = async (serviceId: string): Promise<Service | null> => {
     where: {
       serviceId,
     },
+    include: {
+      category: true,
+      products: true,
+      reviewAndRatings: true,
+      appointmentBooked: true,
+    },
   });
 
   if (!result) {
