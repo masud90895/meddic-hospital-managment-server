@@ -38,3 +38,15 @@ export type IUpdateMyProfileInfoResponse = {
   message: string;
   updatedInfo: IProfileUpdateRequest;
 };
+
+export type IUserFilterRequest = {
+  searchTerm?: string | undefined;
+  role?: userRole | undefined;
+};
+
+export type IGetAllUserResponse = {
+  email: string;
+  userId: string;
+  profileId: string | null;
+  profile: Profile | null;
+};

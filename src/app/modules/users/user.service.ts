@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
@@ -8,33 +9,99 @@ import prisma from '../../../shared/prisma';
 import bcrypt from 'bcrypt';
 import config from '../../../config';
 import {
+  IGetAllUserResponse,
   IProfileUpdateRequest,
   IUpdateUserResponse,
+  IUserFilterRequest,
   IUserUpdateReqAndResponse,
   IUsersResponse,
 } from './user.interface';
+import { IGenericResponse } from '../../../interfaces/common';
+import { UserSearchableFields, userRelationalFields, userRelationalFieldsMapper } from './users.constants';
+import { Prisma } from '@prisma/client';
 
 // ! getting all users ----------------------------------------------------------------------->>>
-const getAllUserService = async (options: IPaginationOptions) => {
+const getAllUserService = async (
+  filters: IUserFilterRequest,
+  options: IPaginationOptions
+): Promise<IGenericResponse<IGetAllUserResponse[]>> => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
+  const { searchTerm, role, ...filterData } = filters;
+
+  const andConditions = [];
+
+  if (searchTerm) {
+    andConditions.push({
+      OR: UserSearchableFields.map((field: any) => ({
+        [field]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    });
+  }
+
+  if (role) {
+    andConditions.push({
+      OR: [
+        {
+          profile: {
+            role: {
+              equals: role,
+            },
+          },
+        },
+      ],
+    });
+  }
+
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map(key => {
+        if (userRelationalFields.includes(key)) {
+          return {
+            [userRelationalFieldsMapper[key]]: {
+              id: (filterData as any)[key],
+            },
+          };
+        } else {
+          return {
+            [key]: {
+              equals: (filterData as any)[key],
+            },
+          };
+        }
+      }),
+    });
+  }
+
+  
+  const whereConditions: Prisma.UserWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
   const result = await prisma.user.findMany({
+    where: whereConditions,
     skip,
     take: limit,
     select: {
-      userId: true,
       email: true,
       createdAt: true,
+      userId: true,
+      profileId: true,
       profile: true,
     },
-    orderBy: {
-      createdAt: 'desc',
-    },
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? { [options.sortBy]: options.sortOrder }
+        : {
+            createdAt: 'desc',
+          },
   });
-  const total = await prisma.user.count();
-
+  const total = await prisma.user.count({
+    where: whereConditions,
+  });
   const totalPage = Math.ceil(total / limit);
-
   return {
     meta: {
       page,
